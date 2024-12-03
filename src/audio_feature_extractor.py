@@ -71,8 +71,8 @@ class AudioFeatureExtractor:
             music_name = filename[4:]
 
             data = {
-                'mfccs': mfccs.flatten(),
-                'chroma': chroma.flatten(),
+                'mfccs': "["+';'.join(map(str, mfccs.flatten()))+"]",
+                'chroma': "["+';'.join(map(str, chroma.flatten()))+"]",
                 'tempo': tempo,
                 'zcr': np.mean(zcr),
                 'genre': genre,
@@ -82,9 +82,9 @@ class AudioFeatureExtractor:
 
         return pd.DataFrame(all_features)
 
-    def dataframe_to_excel(self, df, output_filename="features.xlsx"):
+    def dataframe_to_csv(self, df, output_filename="features.csv"):
         try:
-            df.to_excel("../data/features/" + output_filename, index=False)
+            df.to_csv("../data/features/" + output_filename, index=False)
             print(f"DataFrame exporté avec succès vers {output_filename}")
         except Exception as e:
             print(f"Erreur lors de l'exportation du DataFrame: {e}")
