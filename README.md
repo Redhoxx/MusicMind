@@ -16,6 +16,6 @@ Each feature serves a specific purpose in describing the audio content.
 - Tempo extraction identifies the beats per minute (BPM) of the audio, which is particularly important for rhythmic analysis in music.
 - ZCR measures the rate at which the audio signal crosses the zero amplitude axis. It is a simple yet effective feature for distinguishing between voiced and unvoiced sounds, which is helpful in speech recognition.
 
-These are the inputs that our AI will take for every song that we will compute in order to dertimine its type of music. 
+These are the inputs that our AI will take for every song that we will compute in order to dertimine its type of music. Thanks to the learning data, we will be able to train our model recognize those 4 variables values and assign them to a type. This a supervised learning project : We give to the AI a label for each variable in input and we have an output. 
 
 We then have 4 inputs and 1 output. 
