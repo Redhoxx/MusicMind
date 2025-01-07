@@ -90,6 +90,16 @@ class AudioClassifier:
     def convert_to_list(self, feature_string):
         return [float(value) for value in feature_string.split(';')]
 
+    def save_scaler(self, scaler_filename="audio_scaler.pkl"):
+        import pickle
+        try:
+            scaler_path = os.path.join(self.model_dir, scaler_filename)
+            with open(scaler_path, 'wb') as f:
+                pickle.dump(self.scaler, f)
+            print(f"Scaler enregistré avec succès dans {scaler_path}")
+        except Exception as e:
+            print(f"Erreur lors de l'enregistrement du scaler: {e}")
+
     def save_model(self, model_filename="audio_classifier_model.h5"):
         if self.model is None:
             print("Aucun modèle à enregistrer. Veuillez d'abord entraîner un modèle.")
@@ -101,3 +111,13 @@ class AudioClassifier:
             print(f"Modèle enregistré avec succès dans {model_path}")
         except Exception as e:
             print(f"Erreur lors de l'enregistrement du modèle: {e}")
+
+    def save_label_encoder(self, encoder_filename="label_encoder.pkl"):
+        import pickle
+        try:
+            encoder_path = os.path.join(self.model_dir, encoder_filename)
+            with open(encoder_path, 'wb') as f:
+                pickle.dump(self.label_encoder, f)
+            print(f"LabelEncoder enregistré avec succès dans {encoder_path}")
+        except Exception as e:
+            print(f"Erreur lors de l'enregistrement du LabelEncoder: {e}")
