@@ -25,12 +25,12 @@ def train(retrain=False, github_actions=False):
     if retrain:
         # Charger le modèle pré-entraîné, le scaler et le label encoder
         classifier.load_pretrained_model()
-    else:
-        # Charger les données à partir des segments audio
-        classifier.load_data(audio_segments)
 
-        # Prétraiter les données
-        classifier.preprocess_data()
+    # Charger les données à partir des segments audio
+    classifier.load_data(audio_segments)
+
+    # Prétraiter les données
+    classifier.preprocess_data()
 
     # Construire et entraîner le modèle (ou réentraîner si retrain=True)
     classifier.train_model()
