@@ -157,6 +157,10 @@ class AudioClassifier:
             'tempo': tempo,
             'zcr': np.mean(zcr)
         }
+        if mfccs:
+            print("mfccs présent")
+        else:
+            print("mfcss pas lààààààà")
         return features
 
     def load_pretrained_model(self, model_filename="audio_classifier_model.h5",
