@@ -82,13 +82,22 @@ class AudioClassifier:
         self.model.add(Dense(len(np.unique(self.y_train)), activation='softmax'))
         self.model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
+    @tf.function
     def train_model(self, epochs=100, batch_size=32):
         if self.model is None:
             self.build_model()
 
         early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
-        self.history = self.model.fit(self.X_train, self.y_train, epochs=epochs, batch_size=batch_size,
+        # Convertir le dataset en une liste
+        data_list = list(tf.data.Dataset)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
+
+        # Convertir la liste en tableaux NumPy
+        X_train = np.array([item[0] for item in data_list])
+        y_train = np.array([item[1] for item in data_list])
+
+        # Entraîner le modèle avec les tableaux NumPy
+        self.history = self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
                                       validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
 
     def evaluate_model(self):
