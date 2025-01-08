@@ -12,13 +12,21 @@ jobs:
     - name: Set up Python
       uses: actions/setup-python@v3
       with:
-        python-version: "3.9"
+        python-version: "3.9"  # Spécifier la version de Python
     - name: Install dependencies
       run: |
-        pip install -r requirements.txt
+        pip install -r requirements.txt  # Installer les dépendances
+    - name: Vérifier la présence de fichiers musicaux
+      run: |
+        if find data/raw -type f -name "*.mp3" -o -name "*.wav" -o -name "*.flac" | grep -q .; then
+          echo "Fichiers musicaux trouvés. Démarrage du réentraînement..."
+        else
+          echo "Erreur : Aucun fichier musical trouvé dans data/raw. Annulation du réentraînement."
+          exit 1
+        fi
     - name: Réentraîner le modèle
       run: |
-        python train_model.py --retrain
+        python src/train_model.py --retrain
     - name: Upload model artifacts
       uses: actions/upload-artifact@v3
       with:
