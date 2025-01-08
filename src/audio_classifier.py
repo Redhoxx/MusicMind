@@ -149,20 +149,24 @@ class AudioClassifier:
     def load_pretrained_model(self, model_filename="audio_classifier_model.h5",
                               scaler_filename="audio_scaler.pkl",
                               encoder_filename="label_encoder.pkl"):
-        """
-        Charge un modèle pré-entraîné, le StandardScaler et le LabelEncoder.
-        """
         try:
-            model_path = os.path.join(self.model_dir, model_filename)
+            # Construire les chemins absolus si nécessaire
+            if os.environ.get('GITHUB_WORKSPACE'):
+                model_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, model_filename)
+                scaler_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, scaler_filename)
+                encoder_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, encoder_filename)
+            else:
+                model_path = os.path.join(self.model_dir, model_filename)
+                scaler_path = os.path.join(self.model_dir, scaler_filename)
+                encoder_path = os.path.join(self.model_dir, encoder_filename)
+
             self.model = load_model(model_path)
             print(f"Modèle chargé avec succès depuis {model_path}")
 
-            scaler_path = os.path.join(self.model_dir, scaler_filename)
             with open(scaler_path, 'rb') as f:
                 self.scaler = pickle.load(f)
             print(f"Scaler chargé avec succès depuis {scaler_path}")
 
-            encoder_path = os.path.join(self.model_dir, encoder_filename)
             with open(encoder_path, 'rb') as f:
                 self.label_encoder = pickle.load(f)
             print(f"LabelEncoder chargé avec succès depuis {encoder_path}")
