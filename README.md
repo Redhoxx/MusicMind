@@ -1,21 +1,90 @@
-AI project 2024 
+# AI Project 2024
 
-Bruce L'horset, Lucas Jendzio-Verdasca, Guillaume Cappe de Baillon, Thibaud Barberon
+**Bruce L'horset, Lucas Jendzio-Verdasca, Guillaume Cappe de Baillon, Thibaud Barberon**
 
-This project aims to recognize a type of music with a music file. This is possible by creating an AI that will analyze the audio signal of the song to get some indicators of the song using the librosa library with custom functions to compute the following features:
+Ce projet vise à reconnaître le genre musical d'un fichier audio. Pour ce faire, nous créons une IA qui analyse le signal audio d'une chanson pour en extraire des indicateurs pertinents.
 
-MFCCs (Mel Frequency Cepstral Coefficients)
-Chroma features
-Tempo (beat estimation)
-Zero Crossing Rate (ZCR)
+## Fonctionnement
 
-Each feature serves a specific purpose in describing the audio content. 
+L'IA utilise la bibliothèque `librosa` et des fonctions personnalisées pour calculer les caractéristiques suivantes :
 
-- MFCCs are widely used in audio signal processing, especially for speech and music analysis. They capture the spectral characteristics of an audio signal on the Mel scale, which approximates how humans perceive pitch and frequency.
-- Chroma features represent the 12 semitones (chromatic scale) of music. They are useful for capturing the harmonic and tonal content of the audio signal.
-- Tempo extraction identifies the beats per minute (BPM) of the audio, which is particularly important for rhythmic analysis in music.
-- ZCR measures the rate at which the audio signal crosses the zero amplitude axis. It is a simple yet effective feature for distinguishing between voiced and unvoiced sounds, which is helpful in speech recognition.
+*   MFCCs (Mel Frequency Cepstral Coefficients)
+*   Caractéristiques chromatiques
+*   Tempo (estimation des battements)
+*   Taux de passage à zéro (Zero Crossing Rate - ZCR)
 
-These are the inputs that our AI will take for every song that we will compute in order to dertimine its type of music. Thanks to the learning data, we will be able to train our model recognize those 4 variables values and assign them to a type. This a supervised learning project : We give to the AI a label for each variable in input and we have an output. 
+Chaque caractéristique joue un rôle spécifique dans la description du contenu audio :
 
-We then have 4 inputs and 1 output. 
+*   Les MFCCs capturent les caractéristiques spectrales du signal audio sur l'échelle de Mel, qui se rapproche de la perception humaine de la hauteur et de la fréquence.
+*   Les caractéristiques chromatiques représentent les 12 demi-tons (gamme chromatique) de la musique et capturent le contenu harmonique et tonal du signal audio.
+*   L'extraction du tempo identifie les battements par minute (BPM) de l'audio, ce qui est crucial pour l'analyse rythmique.
+*   Le ZCR mesure la vitesse à laquelle le signal audio traverse l'axe d'amplitude zéro, ce qui permet de distinguer les sons voisés et non voisés.
+
+Ces caractéristiques sont les entrées de notre IA pour chaque chanson. Grâce aux données d'apprentissage, le modèle est entraîné à reconnaître les valeurs de ces variables et à les associer à un genre musical.
+
+## Apprentissage automatique
+
+Il s'agit d'un projet d'apprentissage supervisé : nous fournissons à l'IA une étiquette (genre musical) pour chaque ensemble de variables en entrée. Le modèle a donc 4 entrées (MFCCs, caractéristiques chromatiques, tempo, ZCR) et 1 sortie (genre musical).
+
+## Architecture du modèle
+
+Le modèle utilise un réseau de neurones LSTM (Long Short-Term Memory) avec des couches Dense et Dropout pour la classification.
+
+## Entraînement et réentraînement
+
+Le modèle est entraîné sur un ensemble de données de musiques étiquetées. Un workflow GitHub automatise l'entraînement et le réentraînement du modèle. Le réentraînement peut être déclenché manuellement pour intégrer de nouvelles musiques à l'ensemble de données.
+
+## Interface utilisateur
+
+Une interface utilisateur Gradio permet de télécharger un fichier audio et d'obtenir une prédiction du genre musical en temps réel.
+
+## Bibliothèques utilisées
+
+*   `librosa` : pour l'analyse audio et l'extraction de caractéristiques.
+*   `tensorflow` : pour la construction et l'entraînement du modèle de réseau de neurones.
+*   `sklearn` : pour le prétraitement des données (StandardScaler, LabelEncoder).
+*   `gradio` : pour l'interface utilisateur.
+*   `pydub` : pour la gestion des fichiers audio.
+*   `soundfile` : pour la lecture et l'écriture de fichiers audio.
+*   `pandas` : pour la manipulation des données.
+
+## Utilisation
+
+**Installation des dépendances:**
+
+```bash
+pip install -r requirements.txt
+```
+
+**Entraînement du modèle (entraîne de 0 le modèle):**
+```bash
+python train_model.py
+```
+
+**Réentraînement du modèle (reprend le modèle enregistré):**
+```bash
+python train_model.py --retrain
+```
+
+**Lancement de l'interface utilisateur:**
+```bash
+python main.py
+```
+
+## Utilisation comme base pour un autre projet:
+Ce projet peut servir de base pour d'autres projets de classification audio. Vous pouvez :
+
+Modifier les caractéristiques audio extraites.
+Utiliser un autre type de modèle d'apprentissage automatique.
+Adapter l'interface utilisateur à vos besoins.
+Intégrer le code dans une application plus complexe.
+
+## Remarques:
+Assurez-vous que le fichier Excel "MusicMind - musics used for training.xlsx" est présent dans le dossier "data/raw" et qu'il contient une colonne nommée "Nom du fichier".
+Le workflow GitHub est configuré pour se déclencher manuellement. Vous pouvez le modifier pour qu'il se déclenche automatiquement sur les push vers la branche principale.
+
+## Améliorations futures
+Augmenter la taille et la diversité de l'ensemble de données d'entraînement.
+Explorer d'autres architectures de modèles et d'autres caractéristiques audio.
+Améliorer l'interface utilisateur pour la rendre plus interactive et informative.
+Déployer le modèle comme une application web ou une API.
