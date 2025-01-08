@@ -29,6 +29,9 @@ class AudioClassifier:
         os.makedirs(self.model_dir, exist_ok=True)
 
     def load_data(self, audio_segments):  # Modifier la méthode load_data pour accepter les segments audio
+
+        print(f"Je passe dans load_data avec {len(audio_segments)} segments")
+
         data = []  # Créer une liste pour stocker les données
         for segment, sr, file_name in audio_segments:
             features = self.extract_features_from_audio(segment, sr)  # Extraire les caractéristiques du segment
