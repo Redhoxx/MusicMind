@@ -1,0 +1,10 @@
+librosa
+soundfile
+pydub
+numpy
+tqdm
+pandas
+scikit-learn
+tensorflow
+gradio
+openpyxl

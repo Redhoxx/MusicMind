@@ -1,38 +1,42 @@
 import gradio as gr
 import os
 import shutil
+
 from src.audio_predictor import AudioPredictor
 
-# Initialiser l'AudioPredictor
 audio_predictor = AudioPredictor(
                  ml_model_path="data/models/audio_classifier_model.h5",
                  model_dir="data/models",
-                 raw_audio_dir="data/raw_to_predict",
-                 features_output_path="data/features/audio_features_to_predict.csv")
+                 raw_audio_dir="data/raw_to_predict")
 
-# S'assurer que le répertoire existe
 os.makedirs(audio_predictor.raw_audio_dir, exist_ok=True)
 
 def handle_audio_upload(audio_file):
-    # Définir le chemin de destination
-    destination_path = os.path.join(audio_predictor.raw_audio_dir, os.path.basename(audio_file))
+    try:
+        if not audio_file.endswith((".mp3", ".wav", ".flac")):
+            return "Erreur: Veuillez télécharger un fichier audio valide (mp3, wav, flac)."
 
-    # Copier le fichier audio dans le répertoire de destination
-    shutil.copy(audio_file, destination_path)
+        destination_path = os.path.join(audio_predictor.raw_audio_dir, os.path.basename(audio_file))
 
-    # Appeler la fonction pour prédire le genre
-    predicted_genre = audio_predictor.predict_long_first_audio_in_dir()
+        shutil.copy(audio_file, destination_path)
 
-    if predicted_genre:
-        return f"Genre prédit: {predicted_genre}"
-    else:
-        return "Aucun fichier audio trouvé ou erreur lors de la prédiction."
+        predicted_genre = audio_predictor.predict_long_first_audio_in_dir()
 
-# Créer une interface Gradio
+        if predicted_genre:
+            os.remove(destination_path)
+            return f"Genre prédit: {predicted_genre}"
+        else:
+            return "Erreur lors de la prédiction."
+
+    except Exception as e:
+        return f"Erreur: {e}"
+
 interface = gr.Interface(
     fn=handle_audio_upload,
-    inputs=gr.Audio(type="filepath"),
-    outputs=gr.Textbox(label="Résultat de la prédiction")
+    inputs=gr.Audio(type="filepath", label="Télécharger un fichier audio (mp3, wav, flac, m4a)"),
+    outputs=gr.Textbox(label="Résultat de la prédiction"),
+    title="Prédiction du genre musical",
+    description="Télécharger un fichier audio pour prédire son genre."
 )
 
 interface.launch()

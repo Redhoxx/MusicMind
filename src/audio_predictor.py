@@ -11,13 +11,11 @@ class AudioPredictor:
     def __init__(self,
                  ml_model_path="../data/models/audio_classifier_model.h5",
                  model_dir="../data/models",
-                 raw_audio_dir="../data/raw_to_predict",
-                 features_output_path="../data/features/audio_features_to_predict.csv"):
+                 raw_audio_dir="../data/raw_to_predict"):
 
         self.ml_model_path = ml_model_path
         self.model_dir = model_dir
         self.raw_audio_dir = raw_audio_dir
-        self.features_output_path = features_output_path
         self.model = None
         self.feature_extractor = AudioFeatureExtractor()
         self.classifier = AudioClassifier()
