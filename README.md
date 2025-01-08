@@ -74,17 +74,17 @@ python main.py
 ## Utilisation comme base pour un autre projet:
 Ce projet peut servir de base pour d'autres projets de classification audio. Vous pouvez :
 
-Modifier les caractéristiques audio extraites.
-Utiliser un autre type de modèle d'apprentissage automatique.
-Adapter l'interface utilisateur à vos besoins.
-Intégrer le code dans une application plus complexe.
+* Modifier les caractéristiques audio extraites.
+* Utiliser un autre type de modèle d'apprentissage automatique.
+* Adapter l'interface utilisateur à vos besoins.
+* Intégrer le code dans une application plus complexe.
 
 ## Remarques:
-Assurez-vous que le fichier Excel "MusicMind - musics used for training.xlsx" est présent dans le dossier "data/raw" et qu'il contient une colonne nommée "Nom du fichier".
-Le workflow GitHub est configuré pour se déclencher manuellement. Vous pouvez le modifier pour qu'il se déclenche automatiquement sur les push vers la branche principale.
+* Assurez-vous que le fichier Excel "MusicMind - musics used for training.xlsx" est présent dans le dossier "data/raw" et qu'il contient une colonne nommée "Nom du fichier".
+* Le workflow GitHub est configuré pour se déclencher manuellement. Vous pouvez le modifier pour qu'il se déclenche automatiquement sur les push vers la branche principale.
 
 ## Améliorations futures
-Augmenter la taille et la diversité de l'ensemble de données d'entraînement.
-Explorer d'autres architectures de modèles et d'autres caractéristiques audio.
-Améliorer l'interface utilisateur pour la rendre plus interactive et informative.
-Déployer le modèle comme une application web ou une API.
+* Augmenter la taille et la diversité de l'ensemble de données d'entraînement.
+* Explorer d'autres architectures de modèles et d'autres caractéristiques audio.
+* Améliorer l'interface utilisateur pour la rendre plus interactive et informative.
+* Déployer le modèle comme une application web ou une API.
