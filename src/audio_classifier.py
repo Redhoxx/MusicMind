@@ -29,9 +29,6 @@ class AudioClassifier:
         os.makedirs(self.model_dir, exist_ok=True)
 
     def load_data(self, audio_segments):  # Modifier la méthode load_data pour accepter les segments audio
-
-        print(f"Je passe dans load_data avec {len(audio_segments)} segments")
-
         data = []  # Créer une liste pour stocker les données
         for segment, sr, file_name in audio_segments:
             features = self.extract_features_from_audio(segment, sr)  # Extraire les caractéristiques du segment
@@ -93,7 +90,7 @@ class AudioClassifier:
         early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
         # Convertir le dataset en une liste
-        data_list = list(tf.data.Dataset)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
+        data_list = list(self.data)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
 
         # Convertir la liste en tableaux NumPy
         X_train = np.array([item[0] for item in data_list])
