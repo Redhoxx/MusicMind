@@ -9,6 +9,8 @@ from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
 
+import tensorflow as tf
+
 import pickle
 
 class AudioClassifier:
@@ -86,8 +88,15 @@ class AudioClassifier:
 
         early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
-        self.history = self.model.fit(self.X_train, self.y_train, epochs=epochs, batch_size=batch_size,
-                                      validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
+        # Convertir les données en tenseurs TensorFlow
+        X_train_tensor = tf.convert_to_tensor(self.X_train)
+        y_train_tensor = tf.convert_to_tensor(self.y_train)
+        X_test_tensor = tf.convert_to_tensor(self.X_test)
+        y_test_tensor = tf.convert_to_tensor(self.y_test)
+
+        # Entraîner le modèle avec les tenseurs
+        self.history = self.model.fit(X_train_tensor, y_train_tensor, epochs=epochs, batch_size=batch_size,
+                                      validation_data=(X_test_tensor, y_test_tensor), callbacks=[early_stopping])
 
     def evaluate_model(self):
         if self.model is None:
