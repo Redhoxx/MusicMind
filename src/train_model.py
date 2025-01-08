@@ -12,7 +12,7 @@ def train(retrain=False, github_actions=False):
     extractor = AudioFeatureExtractor()
 
     # Déterminer le chemin du répertoire raw en fonction de l'environnement
-    raw_dir = "data/raw"  # Chemin par défaut pour l'exécution locale
+    raw_dir = "../data/raw"  # Chemin par défaut pour l'exécution locale
     if github_actions:
         raw_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), raw_dir)
 
@@ -23,7 +23,7 @@ def train(retrain=False, github_actions=False):
     print(f"Nombre de segments audio chargés : {len(audio_segments)}")
 
     # Initialiser le classificateur audio
-    classifier = AudioClassifier(model_dir="data/models")
+    classifier = AudioClassifier(model_dir="../data/models")
 
     if retrain:
         # Charger le modèle pré-entraîné, le scaler et le label encoder
@@ -48,7 +48,7 @@ def train(retrain=False, github_actions=False):
     classifier.save_label_encoder()
 
     # --- Gestion des fichiers musicaux ---
-    excel_file = "data/raw/MusicMind - musics used for training.xlsx"
+    excel_file = "../data/raw/MusicMind - musics used for training.xlsx"
     if github_actions:
         excel_file = os.path.join(os.environ.get('GITHUB_WORKSPACE'), excel_file)
 

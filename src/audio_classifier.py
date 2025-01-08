@@ -14,7 +14,7 @@ import tensorflow as tf
 import pickle
 
 class AudioClassifier:
-    def __init__(self, model_dir="../data/models"):
+    def __init__(self, model_dir="../data/models/"):
         self.model_dir = model_dir
         self.data = None
         self.X_train = None
@@ -92,8 +92,6 @@ class AudioClassifier:
         # Convertir le dataset en une liste
         data_list = list(self.data.values)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
 
-        print(data_list)
-
         # Convertir la liste en tableaux NumPy
         X_train = np.array([item[0] for item in data_list])
         y_train = np.array([item[1] for item in data_list])
@@ -157,10 +155,6 @@ class AudioClassifier:
             'tempo': tempo,
             'zcr': np.mean(zcr)
         }
-        if mfccs:
-            print("mfccs présent")
-        else:
-            print("mfcss pas lààààààà")
         return features
 
     def load_pretrained_model(self, model_filename="audio_classifier_model.h5",
@@ -173,9 +167,11 @@ class AudioClassifier:
                 scaler_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, scaler_filename)
                 encoder_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, encoder_filename)
             else:
-                model_path = os.path.join(self.model_dir, model_filename)
-                scaler_path = os.path.join(self.model_dir, scaler_filename)
-                encoder_path = os.path.join(self.model_dir, encoder_filename)
+                # Obtenir le répertoire du script en cours d'exécution
+                script_dir = os.path.dirname(os.path.abspath(__file__))
+                model_path = os.path.join(script_dir, "..", "data", "models", model_filename)
+                scaler_path = os.path.join(script_dir, "..", "data", "models", scaler_filename)
+                encoder_path = os.path.join(script_dir, "..", "data", "models", encoder_filename)
 
             self.model = load_model(model_path)
             print(f"Modèle chargé avec succès depuis {model_path}")

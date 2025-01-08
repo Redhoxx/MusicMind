@@ -21,7 +21,12 @@ class AudioFeatureExtractor:
                         audio.export(temp_wav_file, format="wav")
                         file_path = temp_wav_file
 
-                    y, sr = librosa.load(file_path)
+                    try:
+                        y, sr = librosa.load(file_path)
+                    except (librosa.util.exceptions.ParameterError, Exception) as e:
+                        print("C'EST LE LOAD DE LIBROSA QUI PARLE")
+                        print(f"Erreur lors du traitement du fichier {filename}: {e}")
+                        continue  # Passer au fichier suivant
 
                     if filename.endswith(".m4a"):
                         os.remove(temp_wav_file)
