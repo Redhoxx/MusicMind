@@ -1,5 +1,4 @@
 import librosa
-import soundfile as sf
 import os
 from pydub import AudioSegment
 import numpy as np
@@ -9,8 +8,8 @@ class AudioFeatureExtractor:
     def __init__(self, segment_length=10):
         self.segment_length = segment_length
 
-    def split_audio_for_training(self, raw_dir, processed_dir):
-        os.makedirs(processed_dir, exist_ok=True)
+    def split_audio_for_training(self, raw_dir):
+        audio_segments = []
         for filename in tqdm(os.listdir(raw_dir), desc="Splitting audios for training"):
             if filename.endswith((".mp3", ".wav", ".flac", ".m4a")):
                 file_path = os.path.join(raw_dir, filename)
@@ -18,7 +17,7 @@ class AudioFeatureExtractor:
                     temp_wav_file = ""
                     if filename.endswith(".m4a"):
                         audio = AudioSegment.from_file(file_path, format="m4a")
-                        temp_wav_file = os.path.join(processed_dir, "temp.wav")
+                        temp_wav_file = "temp.wav"  # Enregistrer dans le répertoire courant
                         audio.export(temp_wav_file, format="wav")
                         file_path = temp_wav_file
 
@@ -32,12 +31,11 @@ class AudioFeatureExtractor:
 
                     for i in range(0, len(y) - segment_samples, segment_samples):
                         segment = y[i:i + segment_samples]
-                        segment_file = os.path.join(processed_dir, f"{file_name}_{i // segment_samples}.wav")
-                        sf.write(segment_file, segment, sr)
+                        audio_segments.append((segment, sr, file_name))  # Stocker le segment, sr et le nom du fichier
 
                 except Exception as e:
                     print(f"Erreur lors du traitement du fichier {filename}: {e}")
-
+        return audio_segments  # Retourner la liste des segments audio
 
     def load_audio_file(self, file_path):
         try:

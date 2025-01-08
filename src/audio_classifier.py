@@ -1,11 +1,15 @@
 import os
 import pandas as pd
 import numpy as np
+import librosa
+
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
-from tensorflow.keras.models import Sequential
+from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
+
+import pickle
 
 class AudioClassifier:
     def __init__(self, data_path="../data/features/audio_features.csv", model_dir="../data/models"):
@@ -23,24 +27,31 @@ class AudioClassifier:
 
         os.makedirs(self.model_dir, exist_ok=True)
 
-    def load_data(self):
-        self.data = pd.read_csv(self.data_path, sep=',')
+    def load_data(self, audio_segments):  # Modifier la méthode load_data pour accepter les segments audio
+        data = []  # Créer une liste pour stocker les données
+        for segment, sr, file_name in audio_segments:
+            features = self.extract_features_from_audio(segment, sr)  # Extraire les caractéristiques du segment
+            features['genre'] = file_name.split('_')[0]  # Extraire le genre du nom du fichier
+            data.append(features)  # Ajouter les caractéristiques à la liste
+
+        self.data = pd.DataFrame(data)  # Créer un DataFrame à partir de la liste
 
         self.data['mfccs'] = (self.data['mfccs'].astype(str)
                               .str.replace('[', '', regex=False)
                               .str.replace(']', '', regex=False)
                               .apply(self.convert_to_list))
         self.data['chroma'] = (self.data['chroma'].astype(str)
-                               .str.replace('[', '', regex=False)
-                               .str.replace(']', '', regex=False)
-                               .apply(self.convert_to_list))
+                              .str.replace('[', '', regex=False)
+                              .str.replace(']', '', regex=False)
+                              .apply(self.convert_to_list))
         self.data['tempo'] = (self.data['tempo'].astype(str)
                               .str.replace('[', '', regex=False)
                               .str.replace(']', '', regex=False))
 
     def preprocess_data(self):
         if self.data is None:
-            self.load_data()
+            print("Error: Data not loaded. Please call load_data() first.")
+            return
 
         X = self.data[['mfccs', 'chroma', 'tempo', 'zcr']].values
         y = self.data['genre'].values
@@ -121,3 +132,41 @@ class AudioClassifier:
             print(f"LabelEncoder enregistré avec succès dans {encoder_path}")
         except Exception as e:
             print(f"Erreur lors de l'enregistrement du LabelEncoder: {e}")
+
+    def extract_features_from_audio(self, y, sr):
+        mfccs = librosa.feature.mfcc(y=y, sr=sr, n_mfcc=13)
+        chroma = librosa.feature.chroma_stft(y=y, sr=sr)
+        tempo, beat_frames = librosa.beat.beat_track(y=y, sr=sr)
+        zcr = librosa.feature.zero_crossing_rate(y)
+
+        features = {
+            'mfccs': "[" + ';'.join(map(str, mfccs.flatten())) + "]",
+            'chroma': "[" + ';'.join(map(str, chroma.flatten())) + "]",
+            'tempo': tempo,
+            'zcr': np.mean(zcr)
+        }
+        return features
+
+    def load_pretrained_model(self, model_filename="audio_classifier_model.h5",
+                              scaler_filename="audio_scaler.pkl",
+                              encoder_filename="label_encoder.pkl"):
+        """
+        Charge un modèle pré-entraîné, le StandardScaler et le LabelEncoder.
+        """
+        try:
+            model_path = os.path.join(self.model_dir, model_filename)
+            self.model = load_model(model_path)
+            print(f"Modèle chargé avec succès depuis {model_path}")
+
+            scaler_path = os.path.join(self.model_dir, scaler_filename)
+            with open(scaler_path, 'rb') as f:
+                self.scaler = pickle.load(f)
+            print(f"Scaler chargé avec succès depuis {scaler_path}")
+
+            encoder_path = os.path.join(self.model_dir, encoder_filename)
+            with open(encoder_path, 'rb') as f:
+                self.label_encoder = pickle.load(f)
+            print(f"LabelEncoder chargé avec succès depuis {encoder_path}")
+
+        except Exception as e:
+            print(f"Erreur lors du chargement du modèle, du scaler ou du LabelEncoder: {e}")
