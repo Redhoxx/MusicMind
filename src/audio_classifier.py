@@ -92,6 +92,8 @@ class AudioClassifier:
         # Convertir le dataset en une liste
         data_list = list(self.data.values)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
 
+        print(data_list)
+
         # Convertir la liste en tableaux NumPy
         X_train = np.array([item[0] for item in data_list])
         y_train = np.array([item[1] for item in data_list])
