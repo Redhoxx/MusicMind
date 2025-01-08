@@ -12,8 +12,7 @@ from tensorflow.keras.callbacks import EarlyStopping
 import pickle
 
 class AudioClassifier:
-    def __init__(self, data_path="../data/features/audio_features.csv", model_dir="../data/models"):
-        self.data_path = data_path
+    def __init__(self, model_dir="../data/models"):
         self.model_dir = model_dir
         self.data = None
         self.X_train = None
