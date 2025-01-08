@@ -16,6 +16,9 @@ def train(retrain=False, github_actions=False):
     # Charger les segments audio en mémoire
     audio_segments = extractor.split_audio_for_training(raw_dir=raw_dir)
 
+    # Afficher le nombre de segments audio chargés
+    print(f"Nombre de segments audio chargés : {len(audio_segments)}")
+
     # Initialiser le classificateur audio
     classifier = AudioClassifier(model_dir="data/models")
 
