@@ -90,7 +90,7 @@ class AudioClassifier:
         early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
         # Convertir le dataset en une liste
-        data_list = list(self.data)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
+        data_list = list(self.data.values)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
 
         # Convertir la liste en tableaux NumPy
         X_train = np.array([item[0] for item in data_list])
