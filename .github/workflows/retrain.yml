@@ -26,7 +26,7 @@ jobs:
         fi
     - name: Réentraîner le modèle
       run: |
-        python src/train_model.py --retrain
+        python src/train_model.py --retrain --github_actions
     - name: Upload model artifacts
       uses: actions/upload-artifact@v3
       with:
