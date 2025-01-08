@@ -4,7 +4,11 @@ import shutil
 from src.audio_predictor import AudioPredictor
 
 # Initialiser l'AudioPredictor
-audio_predictor = AudioPredictor()
+audio_predictor = AudioPredictor(
+                 ml_model_path="data/models/audio_classifier_model.h5",
+                 model_dir="data/models",
+                 raw_audio_dir="data/raw_to_predict",
+                 features_output_path="data/features/audio_features_to_predict.csv")
 
 # S'assurer que le répertoire existe
 os.makedirs(audio_predictor.raw_audio_dir, exist_ok=True)
@@ -12,13 +16,13 @@ os.makedirs(audio_predictor.raw_audio_dir, exist_ok=True)
 def handle_audio_upload(audio_file):
     # Définir le chemin de destination
     destination_path = os.path.join(audio_predictor.raw_audio_dir, os.path.basename(audio_file))
-    
+
     # Copier le fichier audio dans le répertoire de destination
     shutil.copy(audio_file, destination_path)
-    
+
     # Appeler la fonction pour prédire le genre
     predicted_genre = audio_predictor.predict_long_first_audio_in_dir()
-    
+
     if predicted_genre:
         return f"Genre prédit: {predicted_genre}"
     else:

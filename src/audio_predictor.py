@@ -3,8 +3,8 @@ import pandas as pd
 import numpy as np
 from tensorflow.keras.models import load_model
 
-from audio_feature_extractor import AudioFeatureExtractor
-from audio_classifier import AudioClassifier
+from src.audio_feature_extractor import AudioFeatureExtractor
+from src.audio_classifier import AudioClassifier
 
 
 class AudioPredictor:
@@ -142,3 +142,8 @@ class AudioPredictor:
           return self.predict_long_audio(audio_file)
         else:
           return None
+
+if __name__ == "__main__":
+    AP = AudioPredictor()
+    AP.predict_long_first_audio_in_dir()
+
