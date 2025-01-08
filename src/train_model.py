@@ -4,6 +4,9 @@ import pandas as pd
 from audio_feature_extractor import AudioFeatureExtractor
 from audio_classifier import AudioClassifier
 
+import tensorflow as tf
+tf.compat.v1.disable_eager_execution()
+
 def train(retrain=False, github_actions=False):
     # Initialiser l'extracteur de caractéristiques audio
     extractor = AudioFeatureExtractor()
