@@ -45,18 +45,10 @@ def train(retrain=False, github_actions=False):
     classifier.save_label_encoder()
 
     # --- Gestion des fichiers musicaux ---
-    excel_file = "../data/raw/MusicMind - musics used for training.xlsx"
-    if github_actions:
-        excel_file = os.path.join(os.environ.get('GITHUB_WORKSPACE'), excel_file)
-
-    df = pd.read_excel(excel_file)
-
     for filename in os.listdir(raw_dir):
         if filename.endswith((".mp3", ".flac", ".wav")) and filename != "MusicMind - musics used for training.xlsx":
             file_path = os.path.join(raw_dir, filename)
             os.remove(file_path)
-
-    df.to_excel(excel_file, index=False)
     # --- Fin de la gestion des fichiers musicaux ---
 
 if __name__ == "__main__":
