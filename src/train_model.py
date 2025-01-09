@@ -11,6 +11,8 @@ def train(retrain=False, github_actions=False):
     raw_dir = "/data/raw"  # Chemin par défaut pour l'exécution locale
     if github_actions:
         raw_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), raw_dir)
+        print("GITHUB RAW DIRECTORY")
+        print(raw_dir)
     else:
         raw_dir = os.path.join("..", "data", "raw")
 
