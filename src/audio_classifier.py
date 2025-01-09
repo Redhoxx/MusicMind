@@ -153,9 +153,9 @@ class AudioClassifier:
         try:
             # Construire les chemins absolus si nécessaire
             if os.environ.get('GITHUB_WORKSPACE'):
-                model_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, model_filename)
-                scaler_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, scaler_filename)
-                encoder_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir, encoder_filename)
+                model_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir[3:], model_filename)
+                scaler_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir[3:], scaler_filename)
+                encoder_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir[3:], encoder_filename)
             else:
                 # Obtenir le répertoire du script en cours d'exécution
                 script_dir = os.path.dirname(os.path.abspath(__file__))
