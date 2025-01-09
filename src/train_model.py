@@ -4,9 +4,6 @@ import pandas as pd
 from audio_feature_extractor import AudioFeatureExtractor
 from audio_classifier import AudioClassifier
 
-import tensorflow as tf
-tf.compat.v1.disable_eager_execution()
-
 def train(retrain=False, github_actions=False):
     # Initialiser l'extracteur de caractéristiques audio
     extractor = AudioFeatureExtractor()
@@ -54,16 +51,10 @@ def train(retrain=False, github_actions=False):
 
     df = pd.read_excel(excel_file)
 
-    for _, _, filename in audio_segments:
-        # Construire le chemin absolu du fichier audio
-        source_path = os.path.join(raw_dir, filename + ".mp3")
-
-        # Supprimer le fichier
-        os.remove(source_path)
-
-        # Ajouter le nom du fichier audio au fichier Excel
-        new_row = {'Nom du fichier': filename + ".mp3"}
-        df = pd.concat([df, pd.DataFrame([new_row])], ignore_index=True)
+    for filename in os.listdir(raw_dir):
+        if filename.endswith((".mp3", ".flac", ".wav")) and filename != "MusicMind - musics used for training.xlsx":
+            file_path = os.path.join(raw_dir, filename)
+            os.remove(file_path)
 
     df.to_excel(excel_file, index=False)
     # --- Fin de la gestion des fichiers musicaux ---

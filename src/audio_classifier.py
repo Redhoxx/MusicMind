@@ -2,14 +2,13 @@ import os
 import pandas as pd
 import numpy as np
 import librosa
+from tqdm import tqdm
 
 from sklearn.model_selection import train_test_split
 from sklearn.preprocessing import LabelEncoder, StandardScaler
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
-
-import tensorflow as tf
 
 import pickle
 
@@ -30,7 +29,7 @@ class AudioClassifier:
 
     def load_data(self, audio_segments):  # Modifier la méthode load_data pour accepter les segments audio
         data = []  # Créer une liste pour stocker les données
-        for segment, sr, file_name in audio_segments:
+        for segment, sr, file_name in tqdm(audio_segments, desc="Extracting features from segments"):
             features = self.extract_features_from_audio(segment, sr)  # Extraire les caractéristiques du segment
             features['genre'] = file_name.split('_')[0]  # Extraire le genre du nom du fichier
             data.append(features)  # Ajouter les caractéristiques à la liste
@@ -82,22 +81,13 @@ class AudioClassifier:
         self.model.add(Dense(len(np.unique(self.y_train)), activation='softmax'))
         self.model.compile(loss='sparse_categorical_crossentropy', optimizer='adam', metrics=['accuracy'])
 
-    @tf.function
     def train_model(self, epochs=100, batch_size=32):
         if self.model is None:
             self.build_model()
 
         early_stopping = EarlyStopping(monitor='val_loss', patience=5, restore_best_weights=True)
 
-        # Convertir le dataset en une liste
-        data_list = list(self.data.values)  # Remplacez 'dataset' par le nom de votre objet tf.data.Dataset
-
-        # Convertir la liste en tableaux NumPy
-        X_train = np.array([item[0] for item in data_list])
-        y_train = np.array([item[1] for item in data_list])
-
-        # Entraîner le modèle avec les tableaux NumPy
-        self.history = self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size,
+        self.history = self.model.fit(self.X_train, self.y_train, epochs=epochs, batch_size=batch_size,
                                       validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
 
     def evaluate_model(self):
