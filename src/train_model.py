@@ -1,6 +1,5 @@
 import os
 import argparse
-import pandas as pd
 from audio_feature_extractor import AudioFeatureExtractor
 from audio_classifier import AudioClassifier
 
@@ -8,11 +7,9 @@ def train(retrain=False, github_actions=False):
     # Initialiser l'extracteur de caractéristiques audio
     extractor = AudioFeatureExtractor()
 
-    raw_dir = "/data/raw"  # Chemin par défaut pour l'exécution locale
+    raw_dir = "data/raw"  # Chemin par défaut pour l'exécution locale
     if github_actions:
         raw_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), raw_dir)
-        print("GITHUB RAW DIRECTORY")
-        print(raw_dir)
     else:
         raw_dir = os.path.join("..", "data", "raw")
 
