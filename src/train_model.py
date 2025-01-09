@@ -8,10 +8,11 @@ def train(retrain=False, github_actions=False):
     # Initialiser l'extracteur de caractéristiques audio
     extractor = AudioFeatureExtractor()
 
-    # Déterminer le chemin du répertoire raw en fonction de l'environnement
-    raw_dir = "../data/raw"  # Chemin par défaut pour l'exécution locale
+    raw_dir = "/data/raw"  # Chemin par défaut pour l'exécution locale
     if github_actions:
         raw_dir = os.path.join(os.environ.get('GITHUB_WORKSPACE'), raw_dir)
+    else:
+        raw_dir = os.path.join("..", "data", "raw")
 
     # Charger les segments audio en mémoire
     audio_segments = extractor.split_audio_for_training(raw_dir=raw_dir)
