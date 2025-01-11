@@ -3,6 +3,9 @@ import argparse
 from audio_feature_extractor import AudioFeatureExtractor
 from audio_classifier import AudioClassifier
 
+import tensorflow as tf
+tf.config.experimental_run_functions_eagerly(True)
+
 def train(retrain=False, github_actions=False):
     # Initialiser l'extracteur de caractéristiques audio
     extractor = AudioFeatureExtractor()
@@ -26,14 +29,24 @@ def train(retrain=False, github_actions=False):
         # Charger le modèle pré-entraîné, le scaler et le label encoder
         classifier.load_pretrained_model()
 
-    # Charger les données à partir des segments audio
-    classifier.load_data(audio_segments)
+        # Charger les données à partir des segments audio
+        classifier.load_data(audio_segments)
 
-    # Prétraiter les données
-    classifier.preprocess_data()
+        # Prétraiter les données
+        classifier.preprocess_data()  # Appeler preprocess_data ici
 
-    # Construire et entraîner le modèle (ou réentraîner si retrain=True)
-    classifier.train_model()
+        # Réentraîner le modèle en utilisant les données prétraitées
+        classifier.retrain_model(classifier.X_train, classifier.y_train)
+
+    else:
+        # Charger les données à partir des segments audio
+        classifier.load_data(audio_segments)
+
+        # Prétraiter les données
+        classifier.preprocess_data()
+
+        # Construire et entraîner le modèle
+        classifier.train_model()
 
     # Évaluer le modèle
     loss, accuracy = classifier.evaluate_model()

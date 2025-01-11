@@ -90,6 +90,19 @@ class AudioClassifier:
         self.history = self.model.fit(self.X_train, self.y_train, epochs=epochs, batch_size=batch_size,
                                       validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
 
+    def retrain_model(self, X_train=None, y_train=None, epochs=10, batch_size=32):
+        if self.model is None:
+            raise ValueError("Le modèle doit être chargé avant de pouvoir être réentraîné.")
+
+        if X_train is None or y_train is None:  # Si les données ne sont pas fournies, utiliser self.X_train et self.y_train
+            X_train = self.X_train
+            y_train = self.y_train
+
+        # Entraînement du modèle
+        history = self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
+
+        return history
+
     def evaluate_model(self):
         if self.model is None:
             print("Model not trained yet. Please call train_model() first.")
@@ -111,7 +124,7 @@ class AudioClassifier:
         except Exception as e:
             print(f"Erreur lors de l'enregistrement du scaler: {e}")
 
-    def save_model(self, model_filename="audio_classifier_model.h5"):
+    def save_model(self, model_filename="audio_classifier_model.keras"):
         if self.model is None:
             print("Aucun modèle à enregistrer. Veuillez d'abord entraîner un modèle.")
             return
