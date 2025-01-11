@@ -6,7 +6,6 @@ on:
       audio_file:
         description: 'Téléverser un fichier audio'
         required: true
-        type: file
 
 jobs:
   predict:
@@ -26,4 +25,4 @@ jobs:
 
       - name: Run prediction script
         run: |
-          python main.py ${{ github.event.inputs.audio_file.path }}
+          python main.py ${{ github.event.inputs.video_url }}
