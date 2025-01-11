@@ -1,0 +1,29 @@
+name: Music Genre Prediction
+
+on:
+  workflow_dispatch:
+    inputs:
+      audio_file:
+        description: 'Téléverser un fichier audio'
+        required: true
+        type: file
+
+jobs:
+  predict:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Set up Python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.10'
+
+      - name: Install dependencies
+        run: |
+          pip install -r requirements.txt
+
+      - name: Run prediction script
+        run: |
+          python main.py ${{ github.event.inputs.audio_file.path }}

@@ -133,8 +133,9 @@ class AudioPredictor:
         print(f"Genre prédit pour {audio_file}: {predicted_genre}")
         return predicted_genre
 
-    def predict_long_first_audio_in_dir(self):
-        audio_file = self.find_first_audio_file(self.raw_audio_dir)
+    def predict_long_first_audio_in_dir(self, audio_file=None):
+        if audio_file is None:
+            audio_file = self.find_first_audio_file(self.raw_audio_dir)
         if audio_file:
           return self.predict_long_audio(audio_file)
         else:
