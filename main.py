@@ -5,7 +5,7 @@ import shutil
 from src.audio_predictor import AudioPredictor
 
 audio_predictor = AudioPredictor(
-                 ml_model_path="data/models/audio_classifier_model.h5",
+                 ml_model_path="data/models/audio_classifier_model.keras",
                  model_dir="data/models",
                  raw_audio_dir="data/raw_to_predict")
 

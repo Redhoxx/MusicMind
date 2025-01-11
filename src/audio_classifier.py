@@ -9,11 +9,12 @@ from sklearn.preprocessing import LabelEncoder, StandardScaler
 from tensorflow.keras.models import Sequential, load_model
 from tensorflow.keras.layers import LSTM, Dense, Dropout
 from tensorflow.keras.callbacks import EarlyStopping
+from tensorflow.keras.optimizers import Adam
 
 import pickle
 
 class AudioClassifier:
-    def __init__(self, model_dir="../data/models/"):
+    def __init__(self, model_dir="../data/models"):
         self.model_dir = model_dir
         self.data = None
         self.X_train = None
@@ -27,14 +28,14 @@ class AudioClassifier:
 
         os.makedirs(self.model_dir, exist_ok=True)
 
-    def load_data(self, audio_segments):  # Modifier la méthode load_data pour accepter les segments audio
-        data = []  # Créer une liste pour stocker les données
+    def load_data(self, audio_segments):
+        data = []
         for segment, sr, file_name in tqdm(audio_segments, desc="Extracting features from segments"):
-            features = self.extract_features_from_audio(segment, sr)  # Extraire les caractéristiques du segment
-            features['genre'] = file_name.split('_')[0]  # Extraire le genre du nom du fichier
-            data.append(features)  # Ajouter les caractéristiques à la liste
+            features = self.extract_features_from_audio(segment, sr)
+            features['genre'] = file_name.split('_')[0]
+            data.append(features)
 
-        self.data = pd.DataFrame(data)  # Créer un DataFrame à partir de la liste
+        self.data = pd.DataFrame(data)
 
         self.data['mfccs'] = (self.data['mfccs'].astype(str)
                               .str.replace('[', '', regex=False)
@@ -90,19 +91,6 @@ class AudioClassifier:
         self.history = self.model.fit(self.X_train, self.y_train, epochs=epochs, batch_size=batch_size,
                                       validation_data=(self.X_test, self.y_test), callbacks=[early_stopping])
 
-    def retrain_model(self, X_train=None, y_train=None, epochs=10, batch_size=32):
-        if self.model is None:
-            raise ValueError("Le modèle doit être chargé avant de pouvoir être réentraîné.")
-
-        if X_train is None or y_train is None:  # Si les données ne sont pas fournies, utiliser self.X_train et self.y_train
-            X_train = self.X_train
-            y_train = self.y_train
-
-        # Entraînement du modèle
-        history = self.model.fit(X_train, y_train, epochs=epochs, batch_size=batch_size)
-
-        return history
-
     def evaluate_model(self):
         if self.model is None:
             print("Model not trained yet. Please call train_model() first.")
@@ -131,10 +119,12 @@ class AudioClassifier:
 
         try:
             model_path = os.path.join(self.model_dir, model_filename)
+            # Enregistrer le modèle complet (architecture + poids + optimiseur)
             self.model.save(model_path)
             print(f"Modèle enregistré avec succès dans {model_path}")
+
         except Exception as e:
-            print(f"Erreur lors de l'enregistrement du modèle: {e}")
+            print(f"Erreur lors de l'enregistrement du modèle : {e}")
 
     def save_label_encoder(self, encoder_filename="label_encoder.pkl"):
         import pickle
@@ -160,24 +150,25 @@ class AudioClassifier:
         }
         return features
 
-    def load_pretrained_model(self, model_filename="audio_classifier_model.h5",
+    def load_pretrained_model(self, model_filename="audio_classifier_weights.keras",
                               scaler_filename="audio_scaler.pkl",
                               encoder_filename="label_encoder.pkl"):
         try:
-            # Construire les chemins absolus si nécessaire
             if os.environ.get('GITHUB_WORKSPACE'):
                 model_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir[3:], model_filename)
                 scaler_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir[3:], scaler_filename)
                 encoder_path = os.path.join(os.environ.get('GITHUB_WORKSPACE'), self.model_dir[3:], encoder_filename)
             else:
-                # Obtenir le répertoire du script en cours d'exécution
                 script_dir = os.path.dirname(os.path.abspath(__file__))
                 model_path = os.path.join(script_dir, "..", "data", "models", model_filename)
                 scaler_path = os.path.join(script_dir, "..", "data", "models", scaler_filename)
                 encoder_path = os.path.join(script_dir, "..", "data", "models", encoder_filename)
 
-            self.model = load_model(model_path)
+            self.model.load_model(model_path)
             print(f"Modèle chargé avec succès depuis {model_path}")
+
+            optimizer = Adam()  # Créer un nouvel optimiseur
+            self.model.compile(optimizer=optimizer, loss='sparse_categorical_crossentropy', metrics=['accuracy'])
 
             with open(scaler_path, 'rb') as f:
                 self.scaler = pickle.load(f)

@@ -9,7 +9,7 @@ from src.audio_classifier import AudioClassifier
 
 class AudioPredictor:
     def __init__(self,
-                 ml_model_path="../data/models/audio_classifier_model.h5",
+                 ml_model_path="../data/models/audio_classifier_model.keras",
                  model_dir="../data/models",
                  raw_audio_dir="../data/raw_to_predict"):
 
@@ -66,7 +66,6 @@ class AudioPredictor:
 
         input_data = self.prepare_input_data(features)
 
-        # Prédire le genre
         prediction = self.model.predict(input_data)
         predicted_class = np.argmax(prediction)
 
