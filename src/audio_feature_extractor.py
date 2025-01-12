@@ -44,7 +44,19 @@ class AudioFeatureExtractor:
 
     def load_audio_file(self, file_path):
         try:
-            y, sr = librosa.load(file_path)
+            # Essayer de charger avec PySoundFile
+            try:
+                import soundfile as sf
+                y, sr = sf.read(file_path)
+            except Exception as e1:
+                print(f"Erreur avec PySoundFile : {e1}")
+                # Si PySoundFile échoue, essayer avec librosa
+                try:
+                    y, sr = librosa.load(file_path,
+                                         sr=None)  # sr=None pour utiliser le taux d'échantillonnage du fichier
+                except Exception as e2:
+                    print(f"Erreur avec librosa : {e2}")
+                    return None, None
             return y, sr
         except Exception as e:
             print(f"Erreur lors du chargement de {file_path}: {e}")

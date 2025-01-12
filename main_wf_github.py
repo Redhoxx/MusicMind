@@ -1,5 +1,5 @@
 import sys
-from pytube import YouTube
+from pytubefix import YouTube
 from src.audio_predictor import AudioPredictor
 
 audio_predictor = AudioPredictor(
