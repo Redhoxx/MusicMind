@@ -3,9 +3,10 @@ name: Music Genre Prediction
 on:
   workflow_dispatch:
     inputs:
-      audio_file:
-        description: 'Téléverser un fichier audio'
+      video_url:
+        description: 'Insérer une url youtube'
         required: true
+        type: string
 
 jobs:
   predict:
