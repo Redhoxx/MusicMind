@@ -9,3 +9,4 @@ tensorflow
 gradio
 openpyxl
 pytube
+pytubefix
