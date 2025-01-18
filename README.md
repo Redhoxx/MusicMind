@@ -61,11 +61,6 @@ pip install -r requirements.txt
 python train_model.py
 ```
 
-**Réentraînement du modèle (reprend le modèle enregistré):**
-```bash
-python train_model.py --retrain
-```
-
 **Lancement de l'interface utilisateur:**
 ```bash
 python main.py
