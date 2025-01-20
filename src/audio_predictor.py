@@ -25,6 +25,7 @@ class AudioPredictor:
 
     def load_model(self):
         try:
+            print(f"Loading model from: {self.ml_model_path}")  # Debugging line
             self.model = load_model(self.ml_model_path)
             print(f"Modèle chargé avec succès depuis {self.ml_model_path}")
         except Exception as e:
